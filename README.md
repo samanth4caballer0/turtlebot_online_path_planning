@@ -1,6 +1,6 @@
 # On-line path planner
 
-**This project belongs to Universitat de Girona. Do not update it or any derived work to any public repository.**
+**This project belongs to the Universitat de Girona. It is forbidden to publish this project or any derivative work in any public repository.**
 
 ## Members of the goup:
 
