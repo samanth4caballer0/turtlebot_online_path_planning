@@ -15,35 +15,50 @@ from geometry_msgs.msg import PoseStamped
 from utils_lib.online_planning import StateValidityChecker, move_to_point, compute_path
 
 class OnlinePlanner:
+
+    # OnlinePlanner Constructor
     def __init__(self, gridmap_topic, odom_topic, cmd_vel_topic, dominion, distance_threshold):
 
-        # Attributes
-        self.path = []                                                  # List of points which define the plan. None if there is no plan
-        self.svc = StateValidityChecker(distance_threshold)             # State Validity Checker object
-        self.current_pose = None                                        # Current robot SE2 pose                           
-        self.goal = None                                                # A goal is set
-        self.last_map_time = rospy.Time.now()                           # Last time a map was received (to avoid map update too often)
-        self.dominion = dominion                                        # Dominion in which the path planner will sample configurations
+        # ATTRIBUTES
+        # List of points which define the plan. None if there is no plan
+        self.path = []
+        # State Validity Checker object                                                 
+        self.svc = StateValidityChecker(distance_threshold)
+        # Current robot SE2 pose [x, y, yaw], None if unknown            
+        self.current_pose = None
+        # Goal where the robot has to move, None if it is not set                                                                   
+        self.goal = None
+        # Last time a map was received (to avoid map update too often)                                                
+        self.last_map_time = rospy.Time.now()
+        # Dominion [min_x_y, max_x_y] in which the path planner will sample configurations                           
+        self.dominion = dominion                                        
 
-        # Parameters
-        self.Kv = 0.5                   # Proportional linear velocity controller
-        self.Kw = 0.5                   # Proportional angular velocity controller
-        self.v_max = 0.15               # Maximum linear velocity control action
-        self.w_max = 0.3                # Maximum angular velocity control action
+        # CONTROLLER PARAMETERS
+        # Proportional linear velocity controller gain
+        self.Kv = 0.5
+        # Proportional angular velocity controller gain                   
+        self.Kw = 0.5
+        # Maximum linear velocity control action                   
+        self.v_max = 0.15
+        # Maximum angular velocity control action               
+        self.w_max = 0.3                
 
-        # Publishers
-        self.cmd_pub = ...      # TODO: publisher to cmd_vel_topic    
+        # PUBLISHERS
+        # Publisher for sending velocity commands to the robot
+        self.cmd_pub = None # TODO: publisher to cmd_vel_topic
+        # Publisher for visualizing the path to with rviz
         self.marker_pub = rospy.Publisher('~path_marker', Marker, queue_size=1)
         
-        # Subscribers
-        self.gridmap_sub = ...        # TODO: subscriber to gridmap_topic  
-        self.odom_sub = ...           # TODO: subscriber to odom_topic  
-        self.move_goal_sub = ...      # TODO: subscriber to /move_base_simple/goal published by rviz    
+        # SUBSCRIBERS
+        self.gridmap_sub = None # TODO: subscriber to gridmap_topic from Octomap Server  
+        self.odom_sub = None # TODO: subscriber to odom_topic  
+        self.move_goal_sub = None # TODO: subscriber to /move_base_simple/goal published by rviz    
         
-        # Timers
+        # TIMERS
+        # Timer for velocity controller
         rospy.Timer(rospy.Duration(0.1), self.controller)
     
-    # Odometry callback
+    # Odometry callback: Gets current robot pose and stores it into self.current_pose
     def get_odom(self, odom):
         _, _, yaw = tf.transformations.euler_from_quaternion([odom.pose.pose.orientation.x, 
                                                               odom.pose.pose.orientation.y,
@@ -51,17 +66,22 @@ class OnlinePlanner:
                                                               odom.pose.pose.orientation.w])
         self.current_pose = np.array([odom.pose.pose.position.x, odom.pose.pose.position.y, yaw])
     
-    # Goal callback
+    # Goal callback: Get new goal from /move_base_simple/goal topic published by rviz 
+    # and computes a plan to it using self.plan() method
     def get_goal(self, goal):
-        if self.svc.there_is_map :
+        if self.svc.there_is_map:
             print("New goal received: ({}, {})".format(goal.pose.position.x, goal.pose.position.y))
             self.goal = np.array([goal.pose.position.x, goal.pose.position.y])
-            self.path = None                                                    # to send zero velocity while planning
+             # to send zero velocity while planning
+            self.path = None                                                   
             self.path = self.plan()
         
-    # Map callback
+    # Map callback:  Gets the latest occupancy map published by Octomap server and update 
+    # the state validity checker
     def get_gridmap(self, gridmap):
-        if (gridmap.header.stamp - self.last_map_time).to_sec() > 2:            # to avoid map update too often
+      
+        # to avoid map update too often (change value if necessary)
+        if (gridmap.header.stamp - self.last_map_time).to_sec() > 1:            
             self.last_map_time = gridmap.header.stamp
 
             # Update State Validity Checker
@@ -69,15 +89,18 @@ class OnlinePlanner:
             origin = [gridmap.info.origin.position.x, gridmap.info.origin.position.y]
             self.svc.set(env, gridmap.info.resolution, origin)
 
-            # If there is a path, check if it is still valid
+            # If the robot is following a path, check if it is still valid
             if self.path is not None and len(self.path) > 0:
+                # create total_path adding the current position to the rest of waypoints in the path
                 total_path = [self.current_pose[0:2]] + self.path
                 # TODO: check total_path validity. If total_path is not valid make self.path = None and replan
 
-    # Solve plan
+    # Solve plan from current position to self.goal. 
     def plan(self):
+        # List of waypoints [x, y] that compose the plan
         path = []
         trial = 0
+        # If planning fials, allow replanning for several trials
         while len(path) == 0 and trial < 5:
             print("Compute new path")
 
@@ -86,15 +109,19 @@ class OnlinePlanner:
 
             trial += 1
         if trial == 5:
+            # If planning fails, consider increasing the planning time
             print("Path not found!")
         else:
             print("Path found")
+            # Publish plan marker to visualize in rviz
             self.publish_path(path)
-            del path[0]                 # remove initial vertex (current pose already reached)
+            # remove initial waypoint in the path (current pose is already reached)
+            del path[0]                 
         return path
 
 
-    # This method is called every 0.1. It checks which way point the robot has to face. Send zero velocity if there is no active path.
+    # This method is called every 0.1s. It computes the velocity comands in order to reach the 
+    # next waypoint in the path. It also sends zero velocity commands if there is no active path.
     def controller(self, event):
         v = 0
         w = 0
@@ -108,15 +135,17 @@ class OnlinePlanner:
                     self.goal = None
                     print("Final position reached!")
             else:
-                
-                # TODO: Get velocities from controller to send to robot
+                # TODO: Compute velocities using controller function in utils_lib
                 v = ...
                 w = ...
-                
+        
+        # Publish velocity commands
         self.__send_commnd__(v, w)
     
 
-    # Publishers
+    # PUBLISHER HELPERS
+
+    # Transform linear and angular velocity (v, w) into a Twist message and publish it
     def __send_commnd__(self, v, w):
         cmd = Twist()
         cmd.linear.x = np.clip(v, -self.v_max, self.v_max)
@@ -126,7 +155,8 @@ class OnlinePlanner:
         cmd.angular.y = 0
         cmd.angular.z = np.clip(w, -self.w_max, self.w_max)
         self.cmd_pub.publish(cmd)
-        
+
+    # Publish a path as a series of line markers
     def publish_path(self, path):
         if len(path) > 1:
             print("Publish path!")
@@ -178,7 +208,7 @@ class OnlinePlanner:
             
             self.marker_pub.publish(m)
             
-
+# MAIN FUNCTION
 if __name__ == '__main__':
     rospy.init_node('turtlebot_online_path_planning')   
     node = OnlinePlanner('/projected_map', '/odom', '/cmd_vel', np.array([-15.0, 15.0]), 0.3)

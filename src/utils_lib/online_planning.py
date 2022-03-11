@@ -9,26 +9,35 @@ def wrap_angle(angle):
 class StateValidityChecker:
     """ Checks if a position or a path is valid given an occupancy map."""
 
+    # Constructor
     def __init__(self, distance=0.1):
-        self.map = None                             # map: 2D array of integers [-127,128] which categorize world occupancy
-        self.resolution = None                      # map sampling resolution
-        self.origin = None                          # world position of (0,0) element of the map
-        self.there_is_map = False                   # set method has been called
-        self.distance = distance                    # radius arround the robot used to check occupancy of a trial pose
-        
+        # map: 2D array of integers which categorizes world occupancy
+        self.map = None 
+        # map sampling resolution (size of a cell))                            
+        self.resolution = None
+        # world position of cell (0, 0) in self.map                      
+        self.origin = None
+        # set method has been called                          
+        self.there_is_map = False
+        # radius arround the robot used to check occupancy of a given position                 
+        self.distance = distance                    
+    
+    # Set occupancy map, its resolution and origin. 
     def set(self, data, resolution, origin):
         self.map = data
         self.resolution = resolution
         self.origin = np.array(origin)
         self.there_is_map = True
-        
+    
+    # Given a pose, returs true if the pose is not in collision and false othewise.
     def is_valid(self, pose): 
 
-        # TODO: convert world robot position to map coordinates using method __position_to_map__
-        p = ... 
-
-        # TODO: check occupancy of the vicinity of robot position following self.distance atribude. Be aware to only generate elements inside the map.  
-        if len(p) == 2: # if p is outside the map return true (no explored positions are considered true)
+        p = ... # TODO: convert world robot position to map coordinates using method __position_to_map__
+        
+        # TODO: check occupancy of the vicinity of a robot position (indicated by self.distance atribude). 
+        # Be aware to only generate elements inside the map.
+          
+        if len(p) == 2: # if p is outside the map return true (unexplored positions are considered free)
             u_min = ...
             v_min = ...
             u_max = ...
@@ -37,21 +46,22 @@ class StateValidityChecker:
                 return False                                        # Obstacle
         return True
 
-    def check_path(self, path, min_dist=0.1):
+    # Given a path, returs true if the path is not in collision and false othewise.
+    def check_path(self, path, step_size=0.1):
         for i in range(len(path) - 1):
 
             # TODO: get dist and angle between current element and next element in path
             angle = ...
             dist = ...
 
-            for d in np.arange(0, dist, min_dist):
-
+            for d in np.arange(0, dist, step_size):
                 # TODO: check occupancy of each element d. If one element is occupied return False. 
                 p = ...
                 #if ...
                 
         return True
 
+    # Transform position with respect the map origin to cell coordinates
     def __position_to_map__(self, p):
 
         # TODO: convert world position to map coordinates
@@ -63,7 +73,9 @@ class StateValidityChecker:
         return uv
     
 
-# Planner
+# Planner: This function has to plan a path from start_p to goal_p. To check if a position is valid the 
+# StateValidityChecker class has to be used. The planning dominion must be specified as well as the maximum planning time.
+# The planner returns a path that is a list of poses ([x, y]).
 def compute_path(start_p, goal_p, state_validity_checker, dominion, max_time=1.0):
 
     # TODO: Plan a path from start_p to goal_p inside dominion using the OMPL and the state_validity_checker object. Follow notebook example.
@@ -75,7 +87,8 @@ def compute_path(start_p, goal_p, state_validity_checker, dominion, max_time=1.0
     return ret
 
 
-# Controller
+# Controller: Given the current position and the goal position, this function computes the desired 
+# lineal velocity and angular velocity to be applied in order to reah the goal.
 def move_to_point(current, goal, Kv=0.5, Kw=0.5):
     
     # TODO: Implement a proportional controller which sets a velocity command to move from current position to goal (u = Ke)
