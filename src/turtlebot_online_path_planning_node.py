@@ -210,7 +210,7 @@ class OnlinePlanner:
             
 # MAIN FUNCTION
 if __name__ == '__main__':
-    rospy.init_node('turtlebot_online_path_planning')   
+    rospy.init_node('turtlebot_online_path_planning_node')   
     node = OnlinePlanner('/projected_map', '/odom', '/cmd_vel', np.array([-15.0, 15.0]), 0.3)
     
     # Run forever
