@@ -10,7 +10,7 @@ class StateValidityChecker:
     """ Checks if a position or a path is valid given an occupancy map."""
 
     # Constructor
-    def __init__(self, distance=0.1):
+    def __init__(self, distance=0.1, is_unknown_valid=True):
         # map: 2D array of integers which categorizes world occupancy
         self.map = None 
         # map sampling resolution (size of a cell))                            
@@ -21,6 +21,8 @@ class StateValidityChecker:
         self.there_is_map = False
         # radius arround the robot used to check occupancy of a given position                 
         self.distance = distance                    
+        # if True, unknown space is considered valid
+        self.is_unknown_valid = is_unknown_valid    
     
     # Set occupancy map, its resolution and origin. 
     def set(self, data, resolution, origin):
@@ -32,45 +34,22 @@ class StateValidityChecker:
     # Given a pose, returs true if the pose is not in collision and false othewise.
     def is_valid(self, pose): 
 
-        p = ... # TODO: convert world robot position to map coordinates using method __position_to_map__
-        
+        # TODO: convert world robot position to map coordinates using method __position_to_map__
         # TODO: check occupancy of the vicinity of a robot position (indicated by self.distance atribude). 
-        # Be aware to only generate elements inside the map.
-          
-        if len(p) == 2: # if p is outside the map return true (unexplored positions are considered free)
-            u_min = ...
-            v_min = ...
-            u_max = ...
-            v_max = ...
-            if np.any(self.map[u_min:u_max, v_min:v_max] > 0):
-                return False                                        # Obstacle
-        return True
+        # Return True if free, False if occupied and self.is_unknown_valid if unknown.
+        ...
 
     # Given a path, returs true if the path is not in collision and false othewise.
-    def check_path(self, path, step_size=0.1):
-        for i in range(len(path) - 1):
+    def check_path(self, path, step_size=0.2):
 
-            # TODO: get dist and angle between current element and next element in path
-            angle = ...
-            dist = ...
-
-            for d in np.arange(0, dist, step_size):
-                # TODO: check occupancy of each element d. If one element is occupied return False. 
-                p = ...
-                #if ...
-                
-        return True
+        # TODO: Discretize the positions between 2 waypoints with step_size
+        # TODO: for each point check if `is_valid``. If only one element is not valid return False, otherwise True. 
 
     # Transform position with respect the map origin to cell coordinates
     def __position_to_map__(self, p):
 
-        # TODO: convert world position to map coordinates
-        uv = ...
-
-        # keep position inside map
-        if uv[0] < 0 or uv[0] >= self.map.shape[0] or uv[1] < 0 or uv[1] >= self.map.shape[1]:
-            return []
-        return uv
+        # TODO: convert world position to map coordinates. If position outside map return `[]` or `None`
+        ...
     
 
 # Planner: This function has to plan a path from start_p to goal_p. To check if a position is valid the 
@@ -83,6 +62,7 @@ def compute_path(start_p, goal_p, state_validity_checker, dominion, max_time=1.0
 
     ret = []
     # TODO: if solved fill ret with the points [x, y] in the solution path
+    # TODO: Ensure that the path brings the robot to the goal (with a small tolerance)!
 
     return ret
 
@@ -94,7 +74,6 @@ def move_to_point(current, goal, Kv=0.5, Kw=0.5):
     # TODO: Implement a proportional controller which sets a velocity command to move from current position to goal (u = Ke)
     # Make it sequential to avoid strange curves. First correct orientation and then distance. 
     # Hint: use wrap_angle function to maintain yaw in [-pi, pi]
-    v = ...     # linear velocity
-    w = ...     # angular velocity
+    # This function should return only  linear velocity (v) and angular velocity (w)
     
     return v, w
