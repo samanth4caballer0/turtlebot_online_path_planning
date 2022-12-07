@@ -1,4 +1,4 @@
-# PICK UP OBJECTS TASK
+# Define a "Pickup objects" task using behavior trees
 
 This lab combines the [motion planner](https://bitbucket.org/udg_cirs/turtlebot_online_path_planning/src/master/) developed in the previous lab and the [py_trees](https://github.com/splintered-reality/py_trees) library.
 Using the turtlebot3 simulator in ROS noetic the idea is to complete the following task.
@@ -24,7 +24,7 @@ The robot has to navigate to a point and check if there is an object on it. If t
 
 An execution example can be found [here](http://eia.udg.edu/~npalomer/imgs/robotica/BT.mp4).
 
-<img src="./media/env.png" width=400px/>
+<p align="center"> <img src="./media/env.png" width=400px/> </p>
 
 ## Work to be done
 
