@@ -5,13 +5,17 @@ The main goal of this lab is to move a simulated or real Turtlebot-like robot fr
 
 ## Pre-lab
 
-In this lab we are going to use the [The Open Motion Planning Library](https://ompl.kavrakilab.org/) to implement an on-line path planning algorithm. Therefore, the first we have to do is to install this library. Unfortunately, python bindings for OMPL have to be installed by source. Follow the instructions from [https://ompl.kavrakilab.org/installation.html](https://ompl.kavrakilab.org/installation.html) to install them. Follow the guide and use the following command:
+In this lab we are going to use the [The Open Motion Planning Library](https://ompl.kavrakilab.org/) to implement an on-line path planning algorithm. Therefore, the first we have to do is to install this library. Unfortunately, python bindings for OMPL have to be installed by source. 
+To do it copy the file [install-ompl_1.5.2-ubuntu.sh](../install-ompl_1.5.2-ubuntu.sh) available in this package to your home and execute the following commands:
 
 ```
-./install-ompl-ubuntu.sh --python will install the latest release of OMPL with Python bindings
+chmod +x install-ompl_1.5.2-ubuntu.sh 
+./install-ompl_1.5.2-ubuntu.sh --python 
 ```
 
-it will take some time to finalize the installation.
+This install the 1.5.2 release of OMPL with Python bindings. It will take some time to finalize the installation.
+
+> WARNING: Version 1.6.0 and later do not work well with Ubuntu 20.04.
 
 Once the OMPL is installed in your PC, you should be able to run the notebook included in this package: [ompl_example.ipynb](../notebooks/ompl_example.ipynb). This notebook will show you how to use the OMPL library to implement basic path planning algorithm. Run it, understand the code, and complete whatever it is requested.
 
