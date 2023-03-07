@@ -34,6 +34,7 @@ class ManageObject():
 
         if not self.setup_escenario():
             exit()
+            
         self.pub_set_model_state = rospy.Publisher(
             '/gazebo/set_model_state', ModelState, queue_size=1)
         server_check = rospy.Service('~check_object', Trigger,

@@ -123,3 +123,16 @@ class LetObject(py_trees.behaviour.Behaviour):
 
 # TODO: Create any other required behavior like those to move the robot to a point, 
 #       add or check elements in the blackboard, ...
+
+
+
+
+if __name__ == "__main__":
+    py_trees.logging.level = py_trees.logging.Level.DEBUG
+    rospy.init_node("behavior_trees")
+
+    # Create Behaviors
+    check_object = CheckObject("check_object")
+    get_object = GetObject("get_object")
+    let_object = LetObject("let_object")
+    # fill the rest of the code here ...
