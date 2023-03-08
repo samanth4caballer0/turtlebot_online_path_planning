@@ -35,29 +35,30 @@ class StateValidityChecker:
     def is_valid(self, pose): 
 
         # TODO: convert world robot position to map coordinates using method __position_to_map__
-        # TODO: check occupancy of the vicinity of a robot position (indicated by self.distance atribude). 
-        # Return True if free, False if occupied and self.is_unknown_valid if unknown.
+        # TODO: check occupancy of the vicinity of a robot position (indicated by self.distance atribute). 
+        # Return True if free, False if occupied and self.is_unknown_valid if unknown. 
+        # If checked position is outside the map bounds consider it as unknown.
         ...
 
     # Given a path, returs true if the path is not in collision and false othewise.
-    def check_path(self, path, step_size=0.2):
+    def check_path(self, path):
 
-        # TODO: Discretize the positions between 2 waypoints with step_size
+        # TODO: Discretize the positions between 2 waypoints with an step_size = 2*self.distance
         # TODO: for each point check if `is_valid``. If only one element is not valid return False, otherwise True. 
 
     # Transform position with respect the map origin to cell coordinates
     def __position_to_map__(self, p):
 
-        # TODO: convert world position to map coordinates. If position outside map return `[]` or `None`
+        # TODO: convert world position to map coordinates. 
         ...
     
 
 # Planner: This function has to plan a path from start_p to goal_p. To check if a position is valid the 
 # StateValidityChecker class has to be used. The planning dominion must be specified as well as the maximum planning time.
 # The planner returns a path that is a list of poses ([x, y]).
-def compute_path(start_p, goal_p, state_validity_checker, dominion, max_time=1.0):
+def compute_path(start_p, goal_p, state_validity_checker, bounds, max_time=1.0):
 
-    # TODO: Plan a path from start_p to goal_p inside dominion using the OMPL and the state_validity_checker object. Follow notebook example.
+    # TODO: Plan a path from start_p to goal_p inside bounds using the OMPL and the state_validity_checker object. Follow notebook example.
     # some code
 
     ret = []

@@ -17,7 +17,7 @@ from utils_lib.online_planning import StateValidityChecker, move_to_point, compu
 class OnlinePlanner:
 
     # OnlinePlanner Constructor
-    def __init__(self, gridmap_topic, odom_topic, cmd_vel_topic, dominion, distance_threshold):
+    def __init__(self, gridmap_topic, odom_topic, cmd_vel_topic, bounds, distance_threshold):
 
         # ATTRIBUTES
         # List of points which define the plan. None if there is no plan
@@ -31,7 +31,7 @@ class OnlinePlanner:
         # Last time a map was received (to avoid map update too often)                                                
         self.last_map_time = rospy.Time.now()
         # Dominion [min_x_y, max_x_y] in which the path planner will sample configurations                           
-        self.dominion = dominion                                        
+        self.bounds = bounds                                        
 
         # CONTROLLER PARAMETERS
         # Proportional linear velocity controller gain
@@ -73,8 +73,7 @@ class OnlinePlanner:
             print("New goal received: ({}, {})".format(goal.pose.position.x, goal.pose.position.y))
             self.goal = np.array([goal.pose.position.x, goal.pose.position.y])
              # to send zero velocity while planning
-            self.path = None                                                   
-            self.path = self.plan()
+            self.plan()
         
     # Map callback:  Gets the latest occupancy map published by Octomap server and update 
     # the state validity checker
@@ -93,40 +92,34 @@ class OnlinePlanner:
             if self.path is not None and len(self.path) > 0:
                 # create total_path adding the current position to the rest of waypoints in the path
                 total_path = [self.current_pose[0:2]] + self.path
-                # TODO: check total_path validity. If total_path is not valid make self.path = None and replan
+                # TODO: check total_path validity. If total_path is not valid replan
 
     # Solve plan from current position to self.goal. 
     def plan(self):
         # List of waypoints [x, y] that compose the plan
-        path = []
-        trial = 0
-        # If planning fials, allow replanning for several trials
-        while len(path) == 0 and trial < 5:
-            print("Compute new path")
-
-            # TODO: plan a path from self.current_pose to self.goal
-            path = ...
-
-            trial += 1
-        if trial == 5:
-            # If planning fails, consider increasing the planning time
+        self.path = []
+        print("Compute new path")
+        # TODO: plan a path from self.current_pose to self.goal
+        self.path = ...
+        
+        # If planning fails, consider increasing the planning time, retry the planning a few times, etc.
+        
+        if len(self.path) == 0:
             print("Path not found!")
         else:
             print("Path found")
             # Publish plan marker to visualize in rviz
-            self.publish_path(path)
+            self.publish_path()
             # remove initial waypoint in the path (current pose is already reached)
-            del path[0]                 
-        return path
-
+            del self.path[0]                 
+        
 
     # This method is called every 0.1s. It computes the velocity comands in order to reach the 
     # next waypoint in the path. It also sends zero velocity commands if there is no active path.
     def controller(self, event):
         v = 0
         w = 0
-        if self.path is not None and len(self.path) > 0:
-
+        if len(self.path) > 0:
             # If current wait point reached with some tolerance move to next way point, otherwise move to current point
             if np.linalg.norm(self.path[0] - self.current_pose[0:2]) < 2*self.svc.resolution:
                 print("Position {} reached".format(self.path[0]))
@@ -157,8 +150,8 @@ class OnlinePlanner:
         self.cmd_pub.publish(cmd)
 
     # Publish a path as a series of line markers
-    def publish_path(self, path):
-        if len(path) > 1:
+    def publish_path(self):
+        if len(self.path) > 1:
             print("Publish path!")
             m = Marker()
             m.header.frame_id = 'odom'
@@ -198,7 +191,7 @@ class OnlinePlanner:
             m.points.append(p)
             m.colors.append(color_blue)
             
-            for n in path:
+            for n in self.path:
                 p = Point()
                 p.x = n[0]
                 p.y = n[1]
@@ -211,7 +204,7 @@ class OnlinePlanner:
 # MAIN FUNCTION
 if __name__ == '__main__':
     rospy.init_node('turtlebot_online_path_planning_node')   
-    node = OnlinePlanner('/projected_map', '/odom', '/cmd_vel', np.array([-15.0, 15.0]), 0.3)
+    node = OnlinePlanner('/projected_map', '/odom', '/cmd_vel', np.array([-10.0, 10.0]), 0.3)
     
     # Run forever
     rospy.spin()
