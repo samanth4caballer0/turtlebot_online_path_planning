@@ -60,12 +60,10 @@ def compute_path(start_p, goal_p, state_validity_checker, bounds, max_time=1.0):
 
     # TODO: Plan a path from start_p to goal_p inside bounds using the OMPL and the state_validity_checker object. Follow notebook example.
     # some code
-
-    ret = []
-    # TODO: if solved fill ret with the points [x, y] in the solution path
+    # TODO: if solved, return a list with the [x, y] points in the solution path
     # TODO: Ensure that the path brings the robot to the goal (with a small tolerance)!
 
-    return ret
+    return ...
 
 
 # Controller: Given the current position and the goal position, this function computes the desired 

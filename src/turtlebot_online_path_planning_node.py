@@ -64,22 +64,25 @@ class OnlinePlanner:
                                                               odom.pose.pose.orientation.y,
                                                               odom.pose.pose.orientation.z,
                                                               odom.pose.pose.orientation.w])
-        self.current_pose = np.array([odom.pose.pose.position.x, odom.pose.pose.position.y, yaw])
+
+        # TODO: Store current position (x, y, yaw) as a np.array in self.current_pose var.
+        self.current_pose = ...
     
     # Goal callback: Get new goal from /move_base_simple/goal topic published by rviz 
     # and computes a plan to it using self.plan() method
     def get_goal(self, goal):
         if self.svc.there_is_map:
-            print("New goal received: ({}, {})".format(goal.pose.position.x, goal.pose.position.y))
-            self.goal = np.array([goal.pose.position.x, goal.pose.position.y])
-             # to send zero velocity while planning
+            # TODO: Store goal (x,y) as a numpy aray in self.goal var and print it 
+            self.goal = ...
+            
+            # Plan a new path to self.goal
             self.plan()
         
-    # Map callback:  Gets the latest occupancy map published by Octomap server and update 
+    # Map callback: Gets the latest occupancy map published by Octomap server and update 
     # the state validity checker
     def get_gridmap(self, gridmap):
       
-        # to avoid map update too often (change value if necessary)
+        # To avoid map update too often (change value '1' if necessary)
         if (gridmap.header.stamp - self.last_map_time).to_sec() > 1:            
             self.last_map_time = gridmap.header.stamp
 
@@ -96,14 +99,16 @@ class OnlinePlanner:
 
     # Solve plan from current position to self.goal. 
     def plan(self):
-        # List of waypoints [x, y] that compose the plan
+        # Invalidate previous plan if available
         self.path = []
+
         print("Compute new path")
         # TODO: plan a path from self.current_pose to self.goal
         self.path = ...
         
-        # If planning fails, consider increasing the planning time, retry the planning a few times, etc.
-        
+        # TODO: If planning fails, consider increasing the planning time, retry the planning a few times, etc.
+        ...
+
         if len(self.path) == 0:
             print("Path not found!")
         else:
@@ -120,15 +125,11 @@ class OnlinePlanner:
         v = 0
         w = 0
         if len(self.path) > 0:
-            # If current wait point reached with some tolerance move to next way point, otherwise move to current point
-            if np.linalg.norm(self.path[0] - self.current_pose[0:2]) < 2*self.svc.resolution:
-                print("Position {} reached".format(self.path[0]))
-                del self.path[0]
-                if len(self.path) == 0:
-                    self.goal = None
-                    print("Final position reached!")
-            else:
-                # TODO: Compute velocities using controller function in utils_lib
+            if ... # TODO: If current waypoint is reached with some tolerance move to the next waypoint. 
+                ...
+                # If it was the last waypoint in the path show a message indicating it 
+                ...
+            else: # TODO: Compute velocities using controller function in utils_lib
                 v = ...
                 w = ...
         
@@ -137,7 +138,6 @@ class OnlinePlanner:
     
 
     # PUBLISHER HELPERS
-
     # Transform linear and angular velocity (v, w) into a Twist message and publish it
     def __send_commnd__(self, v, w):
         cmd = Twist()
