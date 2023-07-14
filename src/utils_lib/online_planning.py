@@ -70,8 +70,8 @@ def compute_path(start_p, goal_p, state_validity_checker, bounds, max_time=1.0):
 # lineal velocity and angular velocity to be applied in order to reah the goal.
 def move_to_point(current, goal, Kv=0.5, Kw=0.5):
     
-    # TODO: Implement a proportional controller which sets a velocity command to move from current position to goal (u = Ke)
-    # Make it sequential to avoid strange curves. First correct orientation and then distance. 
+    # TODO: Use a proportional controller which sets a velocity command to move from current position to goal (u = Ke)
+    # To avoid strange curves, first correct the orientation and then the distance. 
     # Hint: use wrap_angle function to maintain yaw in [-pi, pi]
     # This function should return only  linear velocity (v) and angular velocity (w)
     
