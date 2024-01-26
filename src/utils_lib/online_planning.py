@@ -1,7 +1,4 @@
 import numpy as np
-import math
-from ompl import base as ob
-from ompl import geometric as og
 
 def wrap_angle(angle):
     return (angle + ( 2.0 * np.pi * np.floor( ( np.pi - angle ) / ( 2.0 * np.pi ) ) ) )
@@ -52,17 +49,31 @@ class StateValidityChecker:
         # TODO: convert world position to map coordinates. 
         ...
     
+# Define RRT class (you can take code from Autonopmous Systems course!)
+class RRT:
+    def  __init__(self, state_validity_checker, max_iterations=10000, delta_q=4, p_goal=0.2, dominion=[-10, 10, -10, 10]):
+        # define constructor ...
+    
+    def compute_path(self, q_start, q_goal):
+        # Implement RRT algorithm.
+        # Use the state_validity_checker object to see if a position is valid or not.
+
+    def smooth_path(self, ...):
+        # Optionally, you can implement a finction to smooth the RRT path.
+    
+    def ... # If you need any auxiliar method include it in this class
+
 
 # Planner: This function has to plan a path from start_p to goal_p. To check if a position is valid the 
 # StateValidityChecker class has to be used. The planning dominion must be specified as well as the maximum planning time.
 # The planner returns a path that is a list of poses ([x, y]).
 def compute_path(start_p, goal_p, state_validity_checker, bounds, max_time=1.0):
 
-    # TODO: Plan a path from start_p to goal_p inside bounds using the OMPL and the state_validity_checker object. Follow notebook example.
-    # some code
-    # TODO: if solved, return a list with the [x, y] points in the solution path
+    # TODO: Plan a path from start_p to goal_p inside bounds using the RRT and the 
+    # StateValidityChecker Objects previously defined.
+    # TODO: if solved, return a list with the [x, y] points in the solution path.
+    # example: [[x1, y1], [x2, y2], ...]
     # TODO: Ensure that the path brings the robot to the goal (with a small tolerance)!
-
     return ...
 
 
