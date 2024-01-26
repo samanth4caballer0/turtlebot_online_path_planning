@@ -7,19 +7,7 @@ The main goal of this lab is to move a simulated or real Turtlebot-like robot fr
 
 ## Pre-lab
 
-In this lab we are going to use the [The Open Motion Planning Library](https://ompl.kavrakilab.org/) to implement an on-line path planning algorithm. Therefore, the first we have to do is to install this library. Unfortunately, python bindings for OMPL have to be installed by source. 
-To do it copy the file [install-ompl_1.5.2-ubuntu.sh](../install-ompl_1.5.2-ubuntu.sh) available in this package to your home and execute the following commands:
-
-```
-chmod +x install-ompl_1.5.2-ubuntu.sh 
-./install-ompl_1.5.2-ubuntu.sh --python 
-```
-
-This install the 1.5.2 release of OMPL with Python bindings. It will take some time to finalize the installation.
-
-> WARNING: Version 1.6.0 and later do not work well with Ubuntu 20.04.
-
-Once the OMPL is installed in your PC, you should be able to run the notebook included in this package: [ompl_example.ipynb](../notebooks/ompl_example.ipynb). This notebook will show you how to use the OMPL library to implement basic path planning algorithm. Run it, understand the code, and complete whatever it is requested.
+In this lab we are going to implement an on-line path planning algorithm. The first thing you should do is to complete the Notebook [state_validity_checker.ipynb](notebooks/state_validity_checker.ipynb).
 
 ## Online path planning architecture
 
@@ -29,11 +17,11 @@ To implement a path planner that can run in an unknown environment in real time 
 * A path planner that computes the path from the current position to the goal.
 * A controller that moves the robot along the path.
 
-All these modules have already been seen in previous labs or in the pre-lab:
+We are going to use the following algorithms for all these nodules:
 
-* Map server: An occupancy grid map node has already been implementd and the Octomap server has already been tested.
-* Path planner: Several path planning algorithms (i.e., A*, RRT, ...) have been implemented. Moreover, the Open Motion Planning Library [(OMPL)](https://ompl.kavrakilab.org/) can also be used to implement a path planner.
-* Controller: A controller that moves a robot to a specific position has already been implemented in the `turtlesim` lab.
+* Map server: An occupancy grid map, the Octomap server, will be used. Check the documentation [here](https://wiki.ros.org/octomap_server).
+* Path planner: Several path planning algorithms (i.e., A*, RRT, ...) have been implemented. Here, you can use RRT, or any similar algorithm.
+* Controller: A controller that moves a robot to a specific position was already been implemented in the `turtlesim` lab.
 
 The following figure shows the relations between all these modules.
 
@@ -41,11 +29,11 @@ The following figure shows the relations between all these modules.
     <img src='./imgs/online_planning_architecture.png' width='600'/>
 </div>
 
-As you can see, the center piece is the `planner`, which is responsible for finding a path from the current position to the goal. The connection with the occupancy map is done through the `state validity checker` module that for each configuration examined by the `planner`, it check if there is a collision with the last available `map`. The `controller` takes the list of configurations computed by the `planner` to reach the goal (i.e., the `path`) and it is responsible for moving the robot along them. Every time that the `map server` publishes a new map, the `state validity checker` is also updated and the planned path has to be checked (i.e., new obstacles can make it invalid).
+As you can see, the center piece is the `planner`, which is responsible for finding a path from the current position to the goal. The connection with the occupancy map is done through the `state validity checker` module that for each configuration examined by the `planner`, it check if there is a collision with the last available `map`. The `controller` takes the list of configurations computed by the `planner` to reach the goal (i.e., the `path`) and it is responsible for moving the robot along them. Every time that the `map server` publishes a new map, the `state validity checker` is also updated and the planned path has to be checked as new obstacles can make it invalid.
 
 ## Implementation
 
-Once introduced the main modules that have to be implemented, lets see in more detail how to implement each of them. It is very important to make each module ROS agnostic. It means that ROS specific code do not has to be included in the following modules. We will separate our code in a file containing all the functionalities of our modules and another file, a ROS node, that will make use of all these modules. This file (i.e., the ROS node) will contain all ROS related aspects: subscribe and publish all required messages, timers, configuration files, ...
+Once introduced the main modules that must be implemented, lets see in more detail how to implement each of them. It is very important to make each module ROS agnostic. It means that ROS specific code do not has to be included in the following modules. We will separate our code in a file containing all the functionalities of our modules and another file, a ROS node, that will make use of all these modules. This file (i.e., the ROS node) will contain all ROS related aspects: subscribe and publish all required messages, timers, configuration files, ...
 
 ### State validity checker
 
@@ -61,9 +49,9 @@ This function is called by the ROS node when a new occupancy grid is received. I
 * `resolution` is the resolution of the map (meters per cell).
 * `origin` is the position of the origin of the map (in meters).
 
-#### `is_valid(x, y, distance=0)`:
+#### `is_valid(x, y, distance=0.1)`:
 
-This function checks if the position `(x, y)` defined in meters is valid or not. To do it, it is required to transform the position from meters to the cell index that the position belongs to. If `distance` is greater than 0, it is required to check if the cells at distance `distance` from the `(x, y)` position are also free or not. Take into account the map `resolution` to see how many cells around `(x, y)` have to be checked. The function returns `True` if all checked cells are free and `False` otherwise.
+This function checks if the position `(x, y)` defined in meters is valid or not. To do it, it is required to transform the position from meters to the cell index that the position belongs to. If `distance` is greater than 0, it is required to check if the cells at distance `distance` from the `(x, y)` position are also free or not. Consider the map `resolution` to see how many cells around `(x, y)` have to be checked. The function returns `True` if all checked cells are free and `False` otherwise.
 
 To transform from Cartesian position in meters ($Cartesian_p$) to cell index $Cell_p$, the following formula is used:
 
@@ -87,13 +75,12 @@ Only the `compute_path` function must be implemented.
 
 #### `compute_path(start, goal, state_validity_checker, dominion)`:
 
-Using any path planning algorithm (i.e., RRT, RRT*, PRM...) and the current `map`, this function computes a valid `path` from the `start` to the `goal`. The `path` is a list of `(x, y)` positions in meters.
-To implement it, you can use the Open Motion Planning Library [(OMPL)](https://ompl.kavrakilab.org/) or any other path planning algorithm implemented by yourself.
+Using any path planning algorithm (i.e., RRT, RRT*, PRM...) and the state validity checker object, this function computes a valid `path` from the `start` to the `goal`. The `path` is a list of `(x, y)` positions in meters.
+To implement it, you should first fill the `RRT` class provided in the skeleton with the code you have already implemented in the previous lab. Feel free to change this task for a `PRM` or `RRT*` implementation.
 
 
-The path planner will need access to the `state_validity_checker` while planning. It also will need to know the `dominion` of the environment. The `dominion` is a 2D array containing the minimum bound and maximum bound where the planner will search for a solution.
+The path planner will need access to the `state_validity_checker` while planning. It also will need to know the `dominion` of the environment. The `dominion` is a 2D array containing the minimum bound and maximum bound where the planner will search for a solution (i.e., [$min_x$, $max_x$, $min_y$, $max_y$]).
 
-If the OMPL  library is used check the documentation to see how to properly configure the planner that will be used. 
 
 ### Controller
 
@@ -123,7 +110,7 @@ Where $K_v > 0$ and $K_h > 0$.
 
 ## Implementation
 
-Following the skelethon provided in the file `utils_lib/online_planning.py`, implement a class for the `state_validity_checker` and the functions for the `path_planner` and the `controller` modules.
+Following the skeleton provided in the file `utils_lib/online_planning.py`, implement a class for the `state_validity_checker`, the functions for the `path_planner` and the `controller` modules as well the necessary classes functions for the planning algorithm being used (e.g., the `RRT` class).
 
 Complete the ROS node called `online_planning_node.py` that subscribes to the topics `/projected_map` from the Ocotmap server, `/odom` from the turtlebot3 pose, and `/move_base_simple/goal` published by the `rviz` visualizer. This node also has to publish the topics `/cmd_vel` to move the turtlebot3 as well as a `visualization_msgs/Marker` in the topic `path` to visualize the computed `path` in `rviz`. 
 
@@ -143,4 +130,16 @@ The `turtlebot_online_path_planning` package must be completed and compressed in
 * How to run your code or if some library must be installed
 * If there is something special to explain.
 * If there is anything that is not working properly.
-* Several images or links to videos of the work done. IMPORTANT! Images must bne embedded in the README.md (e.g., ```![](images/image.png)```).
+* Several images or links to videos of the work done. IMPORTANT! Images must be embedded in the README.md (e.g., ```![](images/image.png)```).
+
+
+# Optional Part: Open Motion Planning Library (OMPL)
+
+Optionally, you can try to use the popular Open Motion Planning Library (OMPL) to implement the path planning algorithm. The first you have to do is to install this library. Unfortunately, python bindings for OMPL have to be installed by source and they use to present different problems in each version! 
+
+To do it, follow the instructions in the [OMPL webpage](https://ompl.kavrakilab.org/installation.html). 
+
+> WARNING: Version 1.6.0 and later do not work very well with Ubuntu 20.04.
+> WARNING2: Since November 2023 OMPL presented some problems with Python.
+
+Once the OMPL is installed in your PC, you should be able to run the notebook included in this package: [ompl_example.ipynb](notebooks/ompl_example.ipynb). This notebook will show you how to use the OMPL library to implement a basic path planning algorithm. Run it, understand the code, and complete whatever it is requested.

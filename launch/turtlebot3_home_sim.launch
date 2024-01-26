@@ -1,5 +1,6 @@
 <launch>
-    <include file="$(find turtlebot3_gazebo)/launch/turtlebot3_stage_4.launch"/>   
+    <!--include file="$(find turtlebot3_gazebo)/launch/turtlebot3_stage_4.launch"/-->   
+    <include file="$(find turtlebot3_gazebo)/launch/turtlebot3_house.launch"/>   
     <node pkg="rviz" 
           type="rviz" 
           name="rviz" 
