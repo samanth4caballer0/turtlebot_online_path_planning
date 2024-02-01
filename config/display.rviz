@@ -131,6 +131,8 @@ Visualization Manager:
       Visual Enabled: true
     - Class: rviz/TF
       Enabled: false
+      Filter (blacklist): ""
+      Filter (whitelist): ""
       Frame Timeout: 15
       Frames:
         All Enabled: false
@@ -222,6 +224,14 @@ Visualization Manager:
       Marker Topic: /online_planner/path_marker
       Name: Path
       Namespaces:
+        {}
+      Queue Size: 100
+      Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /turtlebot_online_path_planning/path_marker
+      Name: Path
+      Namespaces:
         path: true
       Queue Size: 100
       Value: true
@@ -289,5 +299,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1869
-  X: 4303
-  Y: 191
+  X: 4271
+  Y: 159
