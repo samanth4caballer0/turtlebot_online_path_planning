@@ -209,30 +209,12 @@ Visualization Manager:
       Topic: /odom
       Unreliable: false
       Value: true
-    - Alpha: 0.699999988079071
-      Class: rviz/Map
-      Color Scheme: map
-      Draw Behind: false
-      Enabled: true
-      Name: Map
-      Topic: /projected_map
-      Unreliable: false
-      Use Timestamp: false
-      Value: true
     - Class: rviz/Marker
       Enabled: true
-      Marker Topic: /online_planner/path_marker
+      Marker Topic: /turtlebot_controller/path_marker
       Name: Path
       Namespaces:
         {}
-      Queue Size: 100
-      Value: true
-    - Class: rviz/Marker
-      Enabled: true
-      Marker Topic: /turtlebot_online_path_planning/path_marker
-      Name: Path
-      Namespaces:
-        path: true
       Queue Size: 100
       Value: true
   Enabled: true
@@ -299,5 +281,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1869
-  X: 4271
-  Y: 159
+  X: 4117
+  Y: 255
