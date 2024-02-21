@@ -5,6 +5,76 @@
 This lab will combine the concepts of occupancy grid mapping and path planning seen in previous sessions.
 The main goal of this lab is to move a simulated or real Turtlebot-like robot from its current position to a goal position avoiding the obstacles in the environment.
 
+## Installation
+
+The following element are necessary to run this package. Remember that after installing a new package, you have to source the `devel/setup.bash` file.
+
+### Gazebo Simulator
+
+To install Gazebo follow these instructions (from [gazebosim](http://gazebosim.org/tutorials?tut=install_ubuntu&cat=install)):
+
+```bash
+# Add a new repository
+sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
+
+# Set up the keys
+wget https://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
+
+# Update debian database
+sudo apt update
+
+# Install Gazebo
+sudo apt install gazebo11
+
+# Check that gazebo is correctly installed
+gazebo
+```
+
+### Install gazebo ROS packages
+
+Install the following package.
+
+```bash
+sudo apt install ros-noetic-gazebo-ros-pkgs ros-noetic-gazebo-ros-control
+```
+
+You can run the following command to check if the installation was successful:
+
+```bash
+roslaunch gazebo_ros empty_world.launch
+```
+
+### Turtlebot3
+
+
+ [TurtleBot 3](https://www.turtlebot.com/) is the third version of ROS standard platform robot. There are 3 versions of robots (i.e., burger, waffle and waffle_pi). There are several ROS package related with turtlebot 3 but all of them can be installed installing only the following meta package:
+
+```bash
+sudo apt update
+sudo apt install ros-noetic-turtlebot3*
+```
+
+You can run the following command to check if the installation was successful:
+
+```bash
+export TURTLEBOT3_MODEL="waffle"
+roslaunch turtlebot3_gazebo turtlebot3_stage_4.launch
+```
+
+### Octomap Server
+
+The Octomap server is a ROS package that provides a 3D occupancy grid map of the environment. It is used to generate the 2D occupancy grid map that will be used by the path planner. To install it, run the following command:
+
+```bash
+sudo apt install ros-noetic-octomap*
+```
+
+You can run the following command to check if the installation was successful:
+
+```bash
+roslaunch roslaunch turtlebot_online_path_planning gazebo.launch
+```
+
 ## Pre-lab
 
 In this lab we are going to implement an on-line path planning algorithm. The first thing you should do is to complete the Notebook [state_validity_checker.ipynb](notebooks/state_validity_checker.ipynb).
