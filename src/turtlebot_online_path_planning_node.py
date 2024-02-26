@@ -67,17 +67,8 @@ class OnlinePlanner:
 
         # TODO: Store current position (x, y, yaw) as a np.array in self.current_pose var.
         self.current_pose = ...
-    
-    # Goal callback: Get new goal from /move_base_simple/goal topic published by rviz 
-    # and computes a plan to it using self.plan() method
-    def get_goal(self, goal):
-        if self.svc.there_is_map:
-            # TODO: Store goal (x,y) as a numpy aray in self.goal var and print it 
-            self.goal = ...
-            
-            # Plan a new path to self.goal
-            self.plan()
-        
+
+
     # Map callback: Gets the latest occupancy map published by Octomap server and update 
     # the state validity checker
     def get_gridmap(self, gridmap):
@@ -92,10 +83,22 @@ class OnlinePlanner:
             self.svc.set(env, gridmap.info.resolution, origin)
 
             # If the robot is following a path, check if it is still valid
-            if self.path is not None and len(self.path) > 0:
+            if len(self.path) > 0:
                 # create total_path adding the current position to the rest of waypoints in the path
                 total_path = [self.current_pose[0:2]] + self.path
                 # TODO: check total_path validity. If total_path is not valid replan
+    
+
+    # Goal callback: Get new goal from /move_base_simple/goal topic published by rviz 
+    # and computes a plan to it using self.plan() method
+    def get_goal(self, goal):
+        if self.svc.there_is_map:
+            # TODO: Store goal (x,y) as a numpy aray in self.goal var and print it 
+            self.goal = ...
+            
+            # Plan a new path to self.goal
+            self.plan()
+
 
     # Solve plan from current position to self.goal. 
     def plan(self):
@@ -149,6 +152,7 @@ class OnlinePlanner:
         cmd.angular.z = np.clip(w, -self.w_max, self.w_max)
         self.cmd_pub.publish(cmd)
 
+
     # Publish a path as a series of line markers
     def publish_path(self):
         if len(self.path) > 1:
@@ -200,6 +204,7 @@ class OnlinePlanner:
                 m.colors.append(color_red)
             
             self.marker_pub.publish(m)
+            
             
 # MAIN FUNCTION
 if __name__ == '__main__':
