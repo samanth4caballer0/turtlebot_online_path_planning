@@ -49,8 +49,8 @@ class StateValidityChecker:
         # TODO: convert world position to map coordinates. 
         ...
     
-# Define RRT class (you can take code from Autonopmous Systems course!)
-class RRT:
+# Define Planner class (you can take code from Autonopmous Systems course!)
+class Planner:
     def  __init__(self, state_validity_checker, max_iterations=10000, delta_q=4, p_goal=0.2, dominion=[-10, 10, -10, 10]):
         # define constructor ...
     
