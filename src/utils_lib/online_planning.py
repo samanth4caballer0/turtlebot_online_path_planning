@@ -51,7 +51,7 @@ class StateValidityChecker:
     
 # Define Planner class (you can take code from Autonopmous Systems course!)
 class Planner:
-    def  __init__(self, state_validity_checker, max_iterations=10000, delta_q=4, p_goal=0.2, dominion=[-10, 10, -10, 10]):
+    def  __init__(self, state_validity_checker, max_iterations=10000, dominion=[-10, 10, -10, 10], ...):
         # define constructor ...
     
     def compute_path(self, q_start, q_goal):
@@ -67,10 +67,10 @@ class Planner:
 # Planner: This function has to plan a path from start_p to goal_p. To check if a position is valid the 
 # StateValidityChecker class has to be used. The planning dominion must be specified as well as the maximum planning time.
 # The planner returns a path that is a list of poses ([x, y]).
-def compute_path(start_p, goal_p, state_validity_checker, bounds, max_time=1.0):
+def compute_path(start_p, goal_p, state_validity_checker, dominion, max_iterations=1000):
 
-    # TODO: Plan a path from start_p to goal_p inside bounds using the RRT and the 
-    # StateValidityChecker Objects previously defined.
+    # TODO: Plan a path from start_p to goal_p inside dominiont using a Planner Object and the 
+    # StateValidityChecker Object previously defined.
     # TODO: if solved, return a list with the [x, y] points in the solution path.
     # example: [[x1, y1], [x2, y2], ...]
     # TODO: Ensure that the path brings the robot to the goal (with a small tolerance)!

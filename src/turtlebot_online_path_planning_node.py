@@ -17,7 +17,7 @@ from utils_lib.online_planning import StateValidityChecker, move_to_point, compu
 class OnlinePlanner:
 
     # OnlinePlanner Constructor
-    def __init__(self, gridmap_topic, odom_topic, cmd_vel_topic, bounds, distance_threshold):
+    def __init__(self, gridmap_topic, odom_topic, cmd_vel_topic, dominion, distance_threshold):
 
         # ATTRIBUTES
         # List of points which define the plan. None if there is no plan
@@ -31,7 +31,7 @@ class OnlinePlanner:
         # Last time a map was received (to avoid map update too often)                                                
         self.last_map_time = rospy.Time.now()
         # Dominion [min_x_y, max_x_y] in which the path planner will sample configurations                           
-        self.bounds = bounds                                        
+        self.dominion = dominion                                        
 
         # CONTROLLER PARAMETERS
         # Proportional linear velocity controller gain
@@ -107,7 +107,7 @@ class OnlinePlanner:
 
         print("Compute new path")
         # TODO: plan a path from self.current_pose to self.goal
-        self.path = ...
+        self.path = compute_path(...
         
         # TODO: If planning fails, consider increasing the planning time, retry the planning a few times, etc.
         ...
