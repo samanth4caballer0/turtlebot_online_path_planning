@@ -72,7 +72,7 @@ sudo apt install ros-noetic-octomap*
 You can run the following command to check if the installation was successful:
 
 ```bash
-roslaunch roslaunch turtlebot_online_path_planning gazebo.launch
+roslaunch turtlebot_online_path_planning gazebo.launch
 ```
 
 ## Pre-lab
