@@ -74,6 +74,16 @@ You can run the following command to check if the installation was successful:
 ```bash
 roslaunch turtlebot_online_path_planning gazebo.launch
 ```
+You should see something like this:
+
+<table><thead>
+  <tr>
+    <td><img src="/imgs/turtle_rviz.png" width="300"></td>
+    <td><img src="/imgs/turtle_gazebo.png" width="300"></td>
+  </tr></thead>
+</table>
+
+
 
 ## Pre-lab
 
@@ -83,7 +93,7 @@ In this lab we are going to implement an on-line path planning algorithm. The fi
 
 To implement a path planner that can run in an unknown environment in real time several modules are required:
 
-* A map server that publishes the occupancy grid map of the environment that has been observer till this moment.
+* A map server that publishes the occupancy grid map of the environment that has been observed till this moment.
 * A path planner that computes the path from the current position to the goal.
 * A controller that moves the robot along the path.
 
@@ -205,7 +215,7 @@ The `turtlebot_online_path_planning` package must be completed and compressed in
 
 # Optional Part: Open Motion Planning Library (OMPL)
 
-Optionally, you can try to use the popular Open Motion Planning Library (OMPL) to implement the path planning algorithm. The first you have to do is to install this library. Unfortunately, python bindings for OMPL have to be installed by source and they use to present different problems in each version! 
+Optionally, you can try to use the popular Open Motion Planning Library (OMPL) to implement the path planning algorithm. Firstly you have to do is to install this library. Unfortunately, python bindings for OMPL have to be installed by source and they use to present different problems in each version! 
 
 To do it, follow the instructions in the [OMPL webpage](https://ompl.kavrakilab.org/installation.html). 
 
