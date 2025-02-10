@@ -164,7 +164,7 @@ The path planner will need access to the `state_validity_checker` while planning
 
 ### Controller
 
-Once a `path` is computed, the controller is responsible for moving the robot along it. The controller only has to implement one function that must be called at a constant frequency if a valid `path` exists: `move_to_point`.
+Once a `path` is computed, the controller is responsible for moving the robot along it. The controller only has to implement one function that must be called at a constant rate given a valid `path`:
 
 #### `move_to_point(x, y, theta, x_goal, y_goal)`:
 
@@ -204,13 +204,15 @@ The `online_planning_node.py` will import the functions previously defined and i
 
 ## Deliverable
 
-The `turtlebot_online_path_planning` package must be completed and compressed into a zip file. Do not forget to include in the README.md file:
+The `turtlebot_online_path_planning` package must be completed and compressed into a zip file. (DONT include the Gazebo resource models). Additionaly a PDF with:
 
-* The name of the people in the group
+* **The names** of the people in the group
 * How to run your code or if some library must be installed
+* A clear image output from doing `rqt_graph` in the command line, showing how all the nodes communicate.
+  <img src="/imgs/rqt_graph.png" width="300">
 * If there is something special to explain.
 * If there is anything that is not working properly.
-* Several images or links to videos of the work done. IMPORTANT! Images must be embedded in the README.md (e.g., ```![](images/image.png)```).
+* A **YouTube video** showcasing the general results of this practice.
 
 
 # Optional Part: Open Motion Planning Library (OMPL)
