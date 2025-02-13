@@ -1,8 +1,14 @@
 <launch>
-    <param name="~frame_id" type="string" value="odom" />
-    <include file="$(find turtlebot_simulation)/launch/kobuki_motion_planning_nogpu.launch" />
-    <!--include file="$(find turtlebot_simulation)/launch/kobuki_motion_planning.launch" /-->
-    <include file="$(find turtlebot_control)/launch/teleop_and_odom.launch" />
-    <node pkg="turtlebot_online_path_planning" type="laser_scan_to_point_cloud_node.py" name="laserscan_to_pointcloud"/>
+    <include file="$(find turtlebot_simulation)/launch/kobuki_motion_planning.launch"/>
+    <node pkg="turtlebot_online_path_planning" type="laser_scan_to_point_cloud_node.py" name="laserscan_to_pointcloud" output="screen">
+        <remap from="/kobuki/sensors/rplidar" to="/turtlebot/kobuki/sensors/rplidar"/>
+    </node>
+
+    <param name="~frame_id" type="string" value="world_ned"/>
+    <param name="~base_frame_id" type="string" value="turtlebot/base_link"/>
     <node pkg="octomap_server" type="octomap_server_node" name="octomap" output="screen"/>
+    <node name="rqt_gui" pkg="rqt_gui" type="rqt_gui"
+        args="--perspective-file $(find turtlebot_online_path_planning)/config/kobuki_cmd.perspective">
+        <remap from="robot_description" to="/turtlebot/robot_description"/>
+    </node>
 </launch>
