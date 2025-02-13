@@ -7,88 +7,50 @@ The main goal of this lab is to move a simulated or real Turtlebot-like robot fr
 
 ## Installation
 
-The following element are necessary to run this package. Remember that after installing a new package, you have to source the `devel/setup.bash` file.
+The following element are necessary to run this package. Remember that after installing a new package, you have to source your catkin workspace with `source devel/setup.bash` command.
 
-## Simulation environment
+### Simulation environment
 Follow the instructions for the simulator you were instructed to use:
 - [Gazebo](https://bitbucket.org/udg_cirs/turtlebot_online_path_planning/src/master/docs/gazebo.md)
-- Stonefish
+- [Stonefish](https://github.com/patrykcieslak/stonefish) and [Stonefish_ros](https://github.com/patrykcieslak/stonefish_ros)
 
-<!-- ### Gazebo Simulator
+### Robot model
+For each simulator we have a diferent robot definition, so please follow the instructions in line with the simulator you are going to use. This has no effect in the code or algorithms we are going work.
 
-To install Gazebo follow these instructions (from [gazebosim](http://gazebosim.org/tutorials?tut=install_ubuntu&cat=install)):
-
-```bash
-# Add a new repository
-sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
-
-# Set up the keys
-wget https://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
-
-# Update debian database
-sudo apt update
-
-# Install Gazebo
-sudo apt install gazebo11
-
-# Check that gazebo is correctly installed
-gazebo
-``` -->
-
-### Install gazebo ROS packages
-
-Install the following package.
-
-```bash
-sudo apt install ros-noetic-gazebo-ros-pkgs ros-noetic-gazebo-ros-control
-```
-
-You can run the following command to check if the installation was successful:
-
-```bash
-roslaunch gazebo_ros empty_world.launch
-```
-
-### Turtlebot3
-
-
- [TurtleBot 3](https://www.turtlebot.com/) is the third version of ROS standard platform robot. There are 3 versions of robots (i.e., burger, waffle and waffle_pi). There are several ROS package related with turtlebot 3 but all of them can be installed installing only the following meta package:
-
-```bash
-sudo apt update
-sudo apt install ros-noetic-turtlebot3*
-```
-
-You can run the following command to check if the installation was successful:
-
-```bash
-export TURTLEBOT3_MODEL="waffle"
-roslaunch turtlebot3_gazebo turtlebot3_stage_4.launch
-```
+- For Gazebo, we use the **TurtleBot 3** package stack, [see here for installation process](https://bitbucket.org/udg_cirs/turtlebot_online_path_planning/src/master/docs/turtlebot3.md).
+- For Stonefish, we use the Kuboki+SwiftPro definitions to make plain **Turtlebot**, [follow these steps](https://bitbucket.org/udg_cirs/turtlebot_online_path_planning/src/master/docs/turtlebot_stonefish.md).
 
 ### Octomap Server
 
-The Octomap server is a ROS package that provides a 3D occupancy grid map of the environment. It is used to generate the 2D occupancy grid map that will be used by the path planner. To install it, run the following command:
+The Octomap server is a ROS package that provides a 3D occupancy grid map of the environment. We will use it to obtain the 2D occupancy grid map that will be used by the path planner. To install it, run the following command:
 
 ```bash
 sudo apt install ros-noetic-octomap*
 ```
 
+### Check installation
 You can run the following command to check if the installation was successful:
 
 ```bash
-roslaunch turtlebot_online_path_planning gazebo.launch
+roslaunch turtlebot_online_path_planning gazebo.launch # gazebo users
+roslaunch turtlebot_online_path_planning stonefish.launch # stonefish users
 ```
 You should see something like this:
 
-<table><thead>
+<table>
+<thead>
   <tr>
+    <td><b>Gazebo Enviroment</td>
     <td><img src="/imgs/turtle_rviz.png" width="300"></td>
     <td><img src="/imgs/turtle_gazebo.png" width="300"></td>
-  </tr></thead>
+  </tr>
+  <tr>
+    <td><b>Stonefish Enviroment</td>
+    <td><img src="/imgs/stonefish_gridmap.png" width="300"></td>
+    <td><img src="/imgs/stonefish_fishstone.png" width="300"></td>
+  </tr>
+  </thead>
 </table>
-
-
 
 ## Pre-lab
 
