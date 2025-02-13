@@ -9,7 +9,12 @@ The main goal of this lab is to move a simulated or real Turtlebot-like robot fr
 
 The following element are necessary to run this package. Remember that after installing a new package, you have to source the `devel/setup.bash` file.
 
-### Gazebo Simulator
+## Simulation environment
+Follow the instructions for the simulator you were instructed to use:
+- [Gazebo](https://bitbucket.org/udg_cirs/turtlebot_online_path_planning/src/master/docs/gazebo.md)
+- Stonefish
+
+<!-- ### Gazebo Simulator
 
 To install Gazebo follow these instructions (from [gazebosim](http://gazebosim.org/tutorials?tut=install_ubuntu&cat=install)):
 
@@ -28,7 +33,7 @@ sudo apt install gazebo11
 
 # Check that gazebo is correctly installed
 gazebo
-```
+``` -->
 
 ### Install gazebo ROS packages
 
