@@ -11,6 +11,7 @@ The following element are necessary to run this package. Remember that after ins
 
 ### Simulation environment
 Follow the instructions for the simulator you were instructed to use:
+
 - [Gazebo](https://bitbucket.org/udg_cirs/turtlebot_online_path_planning/src/master/docs/gazebo.md).
 - [Stonefish](https://github.com/patrykcieslak/stonefish) and [Stonefish_ros](https://github.com/patrykcieslak/stonefish_ros).
 
