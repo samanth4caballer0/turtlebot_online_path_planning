@@ -17,11 +17,10 @@ Follow the instructions for the simulator you were instructed to use:
 ### Robot model
 For each simulator we have a diferent robot definition, so please follow the instructions in line with the simulator you are going to use. This has no effect in the code or algorithms we are going work.
 
-- For Gazebo, we use the **TurtleBot 3** package stack, [see here for installation process](https://bitbucket.org/udg_cirs/turtlebot_online_path_planning/src/master/docs/turtlebot3.md).
-- For Stonefish, we use the Kuboki+SwiftPro definitions to make plain **Turtlebot**, [follow these steps](https://bitbucket.org/udg_cirs/turtlebot_online_path_planning/src/master/docs/turtlebot_stonefish.md).
+- For **Gazebo**, we use the **TurtleBot 3** package stack, [see here for installation process](https://bitbucket.org/udg_cirs/turtlebot_online_path_planning/src/master/docs/turtlebot3.md).
+- For **Stonefish**, we use the Kuboki+SwiftPro definitions to make plain **Turtlebot**, [follow these steps](https://bitbucket.org/udg_cirs/turtlebot_online_path_planning/src/master/docs/turtlebot_stonefish.md).
 
 ### Octomap Server
-
 The Octomap server is a ROS package that provides a 3D occupancy grid map of the environment. We will use it to obtain the 2D occupancy grid map that will be used by the path planner. To install it, run the following command:
 
 ```bash
@@ -41,13 +40,13 @@ You should see something like this:
 <thead>
   <tr>
     <td><b>Gazebo Enviroment</td>
-    <td><img src="/imgs/turtle_rviz.png" width="300"></td>
-    <td><img src="/imgs/turtle_gazebo.png" width="300"></td>
+    <td><img src="/imgs/turtle_rviz.png" width="200"></td>
+    <td><img src="/imgs/turtle_gazebo.png" width="200"></td>
   </tr>
   <tr>
     <td><b>Stonefish Enviroment</td>
-    <td><img src="/imgs/stonefish_gridmap.png" width="300"></td>
-    <td><img src="/imgs/stonefish_fishstone.png" width="300"></td>
+    <td><img src="/imgs/stonefish_gridmap.png" width="200"></td>
+    <td><img src="/imgs/stonefish_fishstone.png" width="200"></td>
   </tr>
   </thead>
 </table>
@@ -101,6 +100,10 @@ This function is called by the ROS node when a new occupancy grid is received. I
 This function checks if the position `(x, y)` defined in meters is valid or not. To do it, it is required to transform the position from meters to the cell index that the position belongs to. If `distance` is greater than 0, it is required to check if the cells at distance `distance` from the `(x, y)` position are also free or not. Consider the map `resolution` to see how many cells around `(x, y)` have to be checked. The function returns `True` if all checked cells are free and `False` otherwise.
 
 To transform from Cartesian position in meters ($Cartesian_p$) to cell index $Cell_p$, the following formula is used:
+
+<div style="text-align: center">
+    <img src='./imgs/equations/cartesian_eq.png'/>
+</div>
 
 $$
  Cell_p = \frac{Cartesian_p - Map_{origin}}{Map_{resolution}}
