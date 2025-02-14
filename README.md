@@ -188,11 +188,6 @@ The `turtlebot_online_path_planning` package must be completed and compressed in
 
 # Optional Part: Open Motion Planning Library (OMPL)
 
-Optionally, you can try to use the popular Open Motion Planning Library (OMPL) to implement the path planning algorithm. Firstly you have to do is to install this library. Unfortunately, python bindings for OMPL have to be installed by source and they use to present different problems in each version! 
+Optionally, you can try to use the popular Open Motion Planning Library (OMPL), which besides including **ready to use** implementations of the most popular Sample Based Motion Planners, also gives us the tools to customize and implement new planning strategies.
 
-To do it, follow the instructions in the [OMPL webpage](https://ompl.kavrakilab.org/installation.html). 
-
-> WARNING: Version 1.6.0 and later do not work very well with Ubuntu 20.04.
-> WARNING2: Since November 2023 OMPL presented some problems with Python.
-
-Once the OMPL is installed in your PC, you should be able to run the notebook included in this package: [ompl_example.ipynb](notebooks/ompl_example.ipynb). This notebook will show you how to use the OMPL library to implement a basic path planning algorithm. Run it, understand the code, and complete whatever it is requested.
+Follow [these instructions](https://bitbucket.org/udg_cirs/turtlebot_online_path_planning/src/master/docs/ompl.md) for the procedure.
