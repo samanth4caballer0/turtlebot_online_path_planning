@@ -1,0 +1,68 @@
+<launch>
+    <!-- Configurable arguments -->
+    <arg name="robot_name" default="turtlebot"/>
+    <arg name="simulation_data" default="$(find turtlebot_simulation)/resources"/>
+    <arg name="scenario_description" value="$(find turtlebot_simulation)/scenarios/turtlebot_integration.scn"/>
+    <arg name="simulation_rate" default="100.0"/>
+    <arg name="graphics_resolution" default="1200 800"/>
+    <arg name="graphics_quality" default="high"/>
+
+    <!-- Static transform -->
+    <node name="world2ned" pkg="tf2_ros" type="static_transform_publisher"
+        args="0 0 0 0 0 3.1415 world world_ned"/>
+
+    <node name="realsense_color" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 camera_color_optical_frame $(arg robot_name)/kobuki/realsense_color 100"/>
+    <node name="realsense_depth" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 camera_depth_optical_frame $(arg robot_name)/kobuki/realsense_depth 100"/>
+
+    <node name="ee_tf" pkg="tf" type="static_transform_publisher" args="0.0 0.0 0.077 0 0 0 turtlebot/swiftpro/link8B turtlebot/swiftpro/ee 100"/>
+
+    <!-- Namespace with robot name -->
+    <group ns="$(arg robot_name)">
+        <!-- Run Simulator -->
+        <node name="stonefish_simulator" pkg="stonefish_ros" type="parsed_simulator"
+            args="$(arg simulation_data) $(arg scenario_description) $(arg simulation_rate) $(arg graphics_resolution) $(arg graphics_quality)" output="screen">
+            <param name="robot_name" value="$(arg robot_name)"/>
+            <remap from="swiftpro/joint_states" to="joint_states"/>
+            <remap from="swiftpro/stonefish_simulator/joint_states" to="joint_states"/>
+        </node>
+
+        <!-- Load ROS Control for active joints -->
+        <group ns="swiftpro">
+            <rosparam command="load" file="$(find turtlebot_simulation)/config/turtlebot_velocity.yaml"/>
+            <node name="controller_spawner" pkg="controller_manager" type="spawner" output="screen"
+                args="joint_state_controller joint_velocity_controller"/>
+            <node name="controller_spawner2" pkg="controller_manager" type="spawner" output="screen"
+                args="--stopped joint1_position_controller joint2_position_controller joint3_position_controller joint4_position_controller"/>
+        </group>
+
+        <!-- Load ROS Control for passive joints-->
+        <group ns="swiftpro/stonefish_simulator">
+            <rosparam command="load" file="$(find turtlebot_simulation)/config/turtlebot_position.yaml"/>
+            <node name="controller_spawner" pkg="controller_manager" type="spawner" output="screen"
+                args="joint_state_controller passive_joint_position_controller"/>
+            <node name="swiftpro_controller" pkg="turtlebot_simulation" type="swiftpro_controller.py">
+                <remap from="joint_states" to="/$(arg robot_name)/joint_states"/>
+                <remap from="command" to="/$(arg robot_name)/swiftpro/stonefish_simulator/passive_joint_position_controller/command"/>
+            </node>
+        </group>
+
+        <!-- Load robot description -->
+        <param name="robot_description" command="$(find xacro)/xacro '$(find turtlebot_description)/urdf/turtlebot.urdf.xacro'"/>
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+        <!-- Run Diff Drive Controller -->
+        <node name="diff_drive_controller" pkg="turtlebot_simulation" type="diff_drive_controller.py" output="screen">
+            <remap from="cmd_vel" to="/$(arg robot_name)/kobuki/commands/velocity"/>
+            <remap from="wheel_velocities" to="/$(arg robot_name)/kobuki/commands/wheel_velocities"/>
+        </node>
+
+        <!-- Run Simple Odometry -->
+        <node name="diff_drive_odom" pkg="pick_up_objects_task" type="odom_to_tf.py" output="screen">
+            <remap from="odom" to="/$(arg robot_name)/kobuki/odom_ground_truth"/>
+        </node>
+
+
+        <!-- RVIZ -->
+        <node pkg="rviz" type="rviz" name="rviz" args="-d $(find pick_up_objects_task)/config/pick.rviz"/>
+    </group>
+</launch>
