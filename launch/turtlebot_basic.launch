@@ -2,7 +2,7 @@
     <!-- Configurable arguments -->
     <arg name="robot_name" default="turtlebot"/>
     <arg name="simulation_data" default="$(find turtlebot_simulation)/resources"/>
-    <arg name="scenario_description" value="$(find turtlebot_simulation)/scenarios/turtlebot_integration.scn"/>
+    <arg name="scenario_description" value="$(find turtlebot_simulation)/scenarios/turtlebot_planning.scn"/>
     <arg name="simulation_rate" default="100.0"/>
     <arg name="graphics_resolution" default="1200 800"/>
     <arg name="graphics_quality" default="high"/>
