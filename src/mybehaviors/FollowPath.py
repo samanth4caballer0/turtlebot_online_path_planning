@@ -29,10 +29,14 @@ class FollowPath(py_trees.behaviour.Behaviour):
             point=[wp.pose.position.x,wp.pose.position.y]
             self.controller.path.append(point)
 
+        # Timers
+        self.timer=rospy.Timer(rospy.Duration(0.1), self.controller.controller)
+
     def update(self):
         try:
             # self.logger.debug("  {}: following path".format(self.name))
             if self.controller.goal_reached:
+                self.timer.shutdown()
                 return py_trees.common.Status.SUCCESS
                 
             else:
@@ -66,8 +70,7 @@ class Controller:
         self.cmd_pub = rospy.Publisher(cmd_vel_topic, Twist, queue_size=1)
         # Subscribers
         self.odom_sub = rospy.Subscriber(odom_topic, Odometry, self.get_odom)
-        # Timers
-        rospy.Timer(rospy.Duration(0.1), self.controller)
+        
 
         # Wrap angle between -pi and pi
     def wrap_angle(self,angle):
