@@ -8,6 +8,7 @@ Panels:
         - /RobotModel1/Links1
         - /TF1/Frames1
         - /Odometry1/Shape1
+        - /Path1
       Splitter Ratio: 0.4816112220287323
     Tree Height: 797
   - Class: rviz/Selection
@@ -475,7 +476,7 @@ Visualization Manager:
       Radius: 0.029999999329447746
       Shaft Diameter: 0.10000000149011612
       Shaft Length: 0.10000000149011612
-      Topic: /robot_base_controller/path
+      Topic: /turtlebot/planned_path
       Unreliable: false
       Value: true
   Enabled: true
