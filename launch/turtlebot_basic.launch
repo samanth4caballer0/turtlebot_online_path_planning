@@ -20,7 +20,7 @@
     <group ns="$(arg robot_name)">
         <!-- Run Simulator -->
         <node name="stonefish_simulator" pkg="stonefish_ros" type="parsed_simulator"
-            args="$(arg simulation_data) $(arg scenario_description) $(arg simulation_rate) $(arg graphics_resolution) $(arg graphics_quality)" output="screen">
+            args="$(arg simulation_data) $(arg scenario_description) $(arg simulation_rate) $(arg graphics_resolution) $(arg graphics_quality)">
             <param name="robot_name" value="$(arg robot_name)"/>
             <remap from="swiftpro/joint_states" to="joint_states"/>
             <remap from="swiftpro/stonefish_simulator/joint_states" to="joint_states"/>
@@ -59,6 +59,8 @@
         <!-- Run Simple Odometry -->
         <node name="diff_drive_odom" pkg="pick_up_objects_task" type="odom_to_tf.py" output="screen">
             <remap from="odom" to="/$(arg robot_name)/kobuki/odom_ground_truth"/>
+            <param name="base_link" value="$(arg robot_name)/kobuki/base_link"/>
+            <param name="fixed_frame" value="world_ned"/>
         </node>
 
 

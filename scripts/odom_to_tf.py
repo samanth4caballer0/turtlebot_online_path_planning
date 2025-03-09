@@ -3,9 +3,11 @@ import rospy
 import tf
 from nav_msgs.msg import Odometry
 
+base_link = "base_link"
+fixed_frame = "odom"
+
 
 # This node is used to publish tf based on the odometry of the vehicle
-# as the Girona1000 publishes the tf through the driver of the INS
 def callback(msg):
     br = tf.TransformBroadcaster()
     br.sendTransform(
@@ -17,16 +19,14 @@ def callback(msg):
             msg.pose.pose.orientation.w,
         ),
         rospy.Time.now(),
-        "/turtlebot/kobuki/base_link",
-        "/world_ned",
+        base_link,
+        fixed_frame,
     )
 
 
-def listener():
+if __name__ == "__main__":
     rospy.init_node("odom_to_tf", anonymous=True)
+    base_link = rospy.get_param("~base_link")
+    fixed_frame = rospy.get_param("~fixed_frame")
     rospy.Subscriber("odom", Odometry, callback)
     rospy.spin()
-
-
-if __name__ == "__main__":
-    listener()
