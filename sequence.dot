@@ -1,0 +1,19 @@
+digraph pastafarianism {
+ordering=out;
+graph [fontname="times-roman"];
+node [fontname="times-roman"];
+edge [fontname="times-roman"];
+Sequence [fillcolor=orange, fontcolor=black, fontsize=9, label="Ⓜ Sequence", shape=box, style=filled];
+plan_path [fillcolor=gray, fontcolor=black, fontsize=9, label=plan_path, shape=ellipse, style=filled];
+Sequence -> plan_path;
+follow_path [fillcolor=gray, fontcolor=black, fontsize=9, label=follow_path, shape=ellipse, style=filled];
+Sequence -> follow_path;
+check_object [fillcolor=gray, fontcolor=black, fontsize=9, label=check_object, shape=ellipse, style=filled];
+Sequence -> check_object;
+get_object [fillcolor=gray, fontcolor=black, fontsize=9, label=get_object, shape=ellipse, style=filled];
+Sequence -> get_object;
+drop_path [fillcolor=gray, fontcolor=black, fontsize=9, label=drop_path, shape=ellipse, style=filled];
+Sequence -> drop_path;
+let_object [fillcolor=gray, fontcolor=black, fontsize=9, label=let_object, shape=ellipse, style=filled];
+Sequence -> let_object;
+}
