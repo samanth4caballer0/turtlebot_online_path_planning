@@ -6,8 +6,6 @@ import tf
 
 from geometry_msgs.msg import Point, PoseStamped, Twist
 from nav_msgs.msg import Odometry, Path
-from visualization_msgs.msg import Marker
-from std_msgs.msg import ColorRGBA
 
 
 # Wrap angle between -pi and pi
@@ -42,7 +40,7 @@ class Controller:
 
         # Publishers
         self.cmd_pub = rospy.Publisher(cmd_vel_topic, Twist, queue_size=1)
-        self.marker_pub = rospy.Publisher("~path_marker", Marker, queue_size=1)
+        self.path_pub = rospy.Publisher("~path", Path, queue_size=1)
 
         # Subscribers
         self.odom_sub = rospy.Subscriber(odom_topic, Odometry, self.get_odom)
@@ -78,7 +76,7 @@ class Controller:
             self.goal = np.array([goal.pose.position.x, goal.pose.position.y])
             self.path = None  # to send zero velocity while planning
             self.path = [self.current_pose[0:2], self.goal]  # to avoid path planning
-            self.publish_path(self.path)
+            # self.publish_path(self.path)
             del self.path[0]  # remove current pose
 
     # Iterate: check to which way point the robot has to face. Send zero velocity if there's no active path.
@@ -99,7 +97,7 @@ class Controller:
                     print("Final position reached!")
             else:
                 v, w = move_to_point(self.current_pose, self.path[0], self.Kv, self.Kw)
-        self.__send_commnd__(v, w)
+        self.__send_commnd__(v, -w)
 
     # Publishers
     def __send_commnd__(self, v, w):
@@ -112,62 +110,33 @@ class Controller:
         cmd.angular.z = np.clip(w, -self.w_max, self.w_max)
         self.cmd_pub.publish(cmd)
 
-    def publish_path(self, path):
-        if len(path) > 1:
-            print("Publish path!")
+    # def publish_path(self, pathlist):
+    #     if len(pathlist) > 1:
+    #         print("Publish path!")
 
-            m = Marker()
-            m.header.frame_id = "odom"
-            m.header.stamp = rospy.Time.now()
-            m.id = 0
-            m.type = Marker.LINE_STRIP
-            m.ns = "path"
-            m.action = Marker.DELETE
-            m.lifetime = rospy.Duration(0)
-            self.marker_pub.publish(m)
+    #         path = Path()
+    #         path.header.frame_id = "world_ned"
+    #         path.header.stamp = rospy.Time.now()
 
-            m.action = Marker.ADD
-            m.scale.x = 0.1
-            m.scale.y = 0.0
-            m.scale.z = 0.0
+    #         p = PoseStamped()
+    #         p.pose.orientation.w = 1
+    #         p.pose.position.x = self.current_pose[0]
+    #         p.pose.position.y = self.current_pose[1]
+    #         path.poses.append(p)
 
-            m.pose.orientation.x = 0
-            m.pose.orientation.y = 0
-            m.pose.orientation.z = 0
-            m.pose.orientation.w = 1
+    #         for n in pathlist:
+    #             p = PoseStamped()
+    #             p.pose.orientation.w = 1
+    #             p.pose.position.x = n[0]
+    #             p.pose.position.y = n[1]
+    #             path.poses.append(p)
 
-            color_red = ColorRGBA()
-            color_red.r = 1
-            color_red.g = 0
-            color_red.b = 0
-            color_red.a = 1
-            color_blue = ColorRGBA()
-            color_blue.r = 0
-            color_blue.g = 0
-            color_blue.b = 1
-            color_blue.a = 1
-
-            p = Point()
-            p.x = self.current_pose[0]
-            p.y = self.current_pose[1]
-            p.z = 0.0
-            m.points.append(p)
-            m.colors.append(color_blue)
-
-            for n in path:
-                p = Point()
-                p.x = n[0]
-                p.y = n[1]
-                p.z = 0.0
-                m.points.append(p)
-                m.colors.append(color_red)
-
-            self.marker_pub.publish(m)
+    #         self.path_pub.publish(path)
 
 
 if __name__ == "__main__":
     rospy.init_node("turtlebot_controller")
-    node = Controller("/odom", "/cmd_vel", 0.15)
+    node = Controller("/odom", "/cmd_vel", 0.10)
 
     # Run forever
     rospy.spin()
