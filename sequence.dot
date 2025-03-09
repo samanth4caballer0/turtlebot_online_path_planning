@@ -12,8 +12,4 @@ check_object [fillcolor=gray, fontcolor=black, fontsize=9, label=check_object, s
 Sequence -> check_object;
 get_object [fillcolor=gray, fontcolor=black, fontsize=9, label=get_object, shape=ellipse, style=filled];
 Sequence -> get_object;
-drop_path [fillcolor=gray, fontcolor=black, fontsize=9, label=drop_path, shape=ellipse, style=filled];
-Sequence -> drop_path;
-let_object [fillcolor=gray, fontcolor=black, fontsize=9, label=let_object, shape=ellipse, style=filled];
-Sequence -> let_object;
 }

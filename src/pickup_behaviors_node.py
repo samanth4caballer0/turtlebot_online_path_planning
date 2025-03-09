@@ -21,17 +21,14 @@ if __name__ == "__main__":
     follow_path = FollowPath("follow_path")
     check_object = CheckObject("check_object")
     get_object = GetObject("get_object")
-    drop_path=PlanPath("drop_path")
-    let_object = LetObject("let_object")
+    # let_object = LetObject("let_object")
 
     # create tree, define root and add behaviors
     root = py_trees.composites.Sequence(name="Sequence", memory=True)
     root.add_children([plan_path, 
                        follow_path, 
                        check_object,
-                        get_object,
-                        drop_path,
-                        let_object])
+                        get_object])
     behavior_tree = py_trees.trees.BehaviourTree(root=root)
     # call setup method of all tree behaviors
     behavior_tree.setup(timeout=15)
@@ -41,14 +38,8 @@ if __name__ == "__main__":
     filepath = rospack.get_path("pick_up_objects_task")
     py_trees.display.render_dot_tree(root=root, target_directory=filepath)
 
-    print("BehaviorTree defined, waiting for goal command")
-    # goal:PoseStamped=rospy.wait_for_message("/move_base_simple/goal",PoseStamped)
-    # plan_path.blackboard.set("goal",goal)
-    # plan_path.goal=goal
-
     # manual path because im lazy but you are not (O__O)
     plan_path.waypoints=[[3.0,-0.78],[3.0,0.7],[1.5,0.7]]
-    drop_path.waypoints=[[1.5,0.7],[3.0,0.7]]
 
     # tick the tree
     try:
@@ -57,7 +48,8 @@ if __name__ == "__main__":
                 behavior_tree.tick()
                 time.sleep(0.5)
             else:
-                pass
+                print("root returned success, tree done")
+                break
         print("\n")
     except KeyboardInterrupt:
         print("")
