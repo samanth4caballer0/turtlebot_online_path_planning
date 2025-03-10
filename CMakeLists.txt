@@ -8,7 +8,6 @@ project(pick_up_objects_task)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  gazebo_msgs
   nav_msgs
   rospy
   message_generation
